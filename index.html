@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scatter Plot with D3.js</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #scatterplot {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Scatter Plot Example</h1>
+    <div id="scatterplot"></div>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        // Sample data similar to the iris dataset
+        const data = [
+            { sepalLength: 5.1, sepalWidth: 3.5, species: 'setosa' },
+            { sepalLength: 4.9, sepalWidth: 3.0, species: 'setosa' },
+            { sepalLength: 6.3, sepalWidth: 3.3, species: 'versicolor' },
+            { sepalLength: 5.8, sepalWidth: 2.7, species: 'versicolor' },
+            { sepalLength: 7.1, sepalWidth: 3.0, species: 'virginica' },
+            { sepalLength: 6.3, sepalWidth: 2.9, species: 'virginica' }
+        ];
+
+        // Set dimensions and margins for the plot
+        const margin = { top: 20, right: 30, bottom: 40, left: 40 },
+              width = 600 - margin.left - margin.right,
+              height = 400 - margin.top - margin.bottom;
+
+        // Append SVG object to the body
+        const svg = d3.select("#scatterplot")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Add X axis
+        const x = d3.scaleLinear()
+            .domain([4, 8])
+            .range([0, width]);
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(x));
+
+        // Add Y axis
+        const y = d3.scaleLinear()
+            .domain([2, 4])
+            .range([height, 0]);
+        svg.append("g")
+            .call(d3.axisLeft(y));
+
+        // Add dots
+        svg.append('g')
+            .selectAll("dot")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("cx", d => x(d.sepalLength))
+            .attr("cy", d => y(d.sepalWidth))
+            .attr("r", 5)
+            .style("fill", d => {
+                switch (d.species) {
+                    case 'setosa': return "#1f77b4";
+                    case 'versicolor': return "#ff7f0e";
+                    case 'virginica': return "#2ca02c";
+                }
+            });
+    </script>
+</body>
+</html>
